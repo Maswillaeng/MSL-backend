@@ -29,9 +29,6 @@ public class UserController {
                                          String accessToken,
                                          HttpServletResponse response) throws IOException {
         UserInfoResponseDto userInfo = authService.validateUserAndGetUserInfo(accessToken, response);
-//        if (userInfo == null) {
-//            return ResponseEntity.status(302).location(uri)
-//        }
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "유저 정보 조회 성공",

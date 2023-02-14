@@ -20,8 +20,8 @@ public class JwtTokenProvider implements InitializingBean {
     @Value("${secret.access}")
     private String SECRET_KEY;
 
-        public static final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
-//    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
+//        public static final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
+    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
     public static final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
 
     @Override

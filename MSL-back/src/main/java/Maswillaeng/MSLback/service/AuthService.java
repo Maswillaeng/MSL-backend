@@ -127,7 +127,7 @@ public class AuthService {
         Optional<Long> userId = jwtTokenProvider.getUserIdWithoutException(accessToken);
         if (!userId.isPresent()) { // 만료된 토큰이면
             response.sendRedirect("/updateToken");
-            return null;
+            return UserInfoResponseDto.of(false);
         }
         User user = userRepository.findById(userId.get()).orElseThrow(
                 () -> new EntityNotFoundException("유저가 존재하지 않습니다."));
