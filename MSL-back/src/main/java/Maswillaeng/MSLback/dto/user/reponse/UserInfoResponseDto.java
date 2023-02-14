@@ -14,18 +14,26 @@ public class UserInfoResponseDto {
 
     private String nickName;
 
-    private String phoneNumber;
-
     private String userImage;
 
     private String introduction;
 
-    public static UserInfoResponseDto of(User user) {
+    private boolean loginState;
+
+    public UserInfoResponseDto(boolean loginState) {
+        this.loginState = loginState;
+    }
+
+    public static UserInfoResponseDto of (boolean loginState) {
+        return new UserInfoResponseDto(loginState);
+    }
+
+    public static UserInfoResponseDto of(User user, boolean loginState) {
         return new UserInfoResponseDto(
                 user.getEmail(),
                 user.getNickName(),
-                user.getPhoneNumber(),
                 user.getUserImage(),
-                user.getIntroduction());
+                user.getIntroduction(),
+                loginState);
     }
 }

@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
@@ -14,8 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import static Maswillaeng.MSLback.jwt.JwtTokenProvider.REFRESH_TOKEN_VALID_TIME;
 
@@ -113,5 +118,20 @@ public class AuthService {
         if (userAge < 18) {
             throw new Exception("성인이 아닙니다");
         }
+    }
+
+    public UserInfoResponseDto validateUserAndGetUserInfo(String accessToken, HttpServletResponse response) throws IOException {
+        if (accessToken == null) {
+            return UserInfoResponseDto.of(false);
+        }
+
+        Optional<Long> userId = jwtTokenProvider.getUserIdWithoutException(accessToken);
+        if (!userId.isPresent()) { // 만료된 토큰이면
+            response.sendRedirect("/updateToken");
+        }
+        User user = userRepository.findById(userId.get()).orElseThrow(
+                () -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+
+        return UserInfoResponseDto.of(user, true);
     }
 }

@@ -23,18 +23,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Transactional(readOnly = true)
-    public UserInfoResponseDto getUser(Long userId) {
-        User user = userRepository.findById(userId).get();
-        return UserInfoResponseDto.of(user);
-
-    }
-
     public void updateUser(Long userId, UserUpdateRequestDto requestDto) {
         User selectedUser = userRepository.findById(userId).get();
 
-        selectedUser.update(requestDto); // 더티체킹
-//        userRepository.save(selectedUser);
+        selectedUser.update(requestDto);
     }
 
     public void userWithdraw(Long userId) {

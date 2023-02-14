@@ -1,6 +1,9 @@
 package Maswillaeng.MSLback.controller;
 
+import Maswillaeng.MSLback.dto.common.ResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
+import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -8,20 +11,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
-
-    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/user")
-    public ResponseEntity<?> getUserInfo() {
-        return ResponseEntity.ok().body(
-                userService.getUser(UserContext.userData.get().getUserId()));
+    public ResponseEntity<?> getUserInfo(@CookieValue(name = "ACCESS_TOKEN", required = false)
+                                         String accessToken,
+                                         HttpServletResponse response) throws IOException {
+        UserInfoResponseDto userInfo = authService.validateUserAndGetUserInfo(accessToken, response);
+
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "유저 정보 조회 성공",
+                userInfo
+        ));
     }
 
 
