@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -22,11 +24,14 @@ public class UserController {
     private final UserService userService;
     private final AuthService authService;
 
-    @GetMapping("/user")
+    @GetMapping("/api-user")
     public ResponseEntity<?> getUserInfo(@CookieValue(name = "ACCESS_TOKEN", required = false)
                                          String accessToken,
                                          HttpServletResponse response) throws IOException {
         UserInfoResponseDto userInfo = authService.validateUserAndGetUserInfo(accessToken, response);
+//        if (userInfo == null) {
+//            return ResponseEntity.status(302).location(uri)
+//        }
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "유저 정보 조회 성공",

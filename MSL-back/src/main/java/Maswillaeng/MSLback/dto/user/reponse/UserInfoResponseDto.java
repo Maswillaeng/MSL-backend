@@ -18,10 +18,10 @@ public class UserInfoResponseDto {
 
     private String introduction;
 
-    private boolean loginState;
+    private boolean isLoggedIn;
 
     public UserInfoResponseDto(boolean loginState) {
-        this.loginState = loginState;
+        this.isLoggedIn = loginState;
     }
 
     public static UserInfoResponseDto of (boolean loginState) {

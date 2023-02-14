@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -85,7 +84,7 @@ public class AuthService {
                 .path("/")
                 .httpOnly(true)
                 .maxAge(REFRESH_TOKEN_VALID_TIME)
-                .sameSite("Lax")
+//                .sameSite("none")
                 .build();
     }
 
@@ -95,7 +94,7 @@ public class AuthService {
                 .path("/updateToken")
                 .httpOnly(true)
                 .maxAge(REFRESH_TOKEN_VALID_TIME)
-                .sameSite("Lax")
+//                .sameSite("Lax")
                 .build();
     }
 
@@ -128,6 +127,7 @@ public class AuthService {
         Optional<Long> userId = jwtTokenProvider.getUserIdWithoutException(accessToken);
         if (!userId.isPresent()) { // 만료된 토큰이면
             response.sendRedirect("/updateToken");
+            return null;
         }
         User user = userRepository.findById(userId.get()).orElseThrow(
                 () -> new EntityNotFoundException("유저가 존재하지 않습니다."));
