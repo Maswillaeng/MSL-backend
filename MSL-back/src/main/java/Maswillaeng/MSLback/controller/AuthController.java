@@ -5,6 +5,7 @@ import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.ImportResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
@@ -19,7 +20,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserRepository userRepository;
     private final ExternalHttpService externalHttpService;
-//rrrrrrr
+
     @PostMapping("/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody String email) {
         if (userRepository.existsByEmail(email)) {
@@ -62,21 +62,11 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
         LoginResponseDto dto = authService.login(request);
 
-        ResponseCookie AccessToken = ResponseCookie.from(
-                "ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
-                .path("/")
-                .httpOnly(true)
-                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
-                .sameSite("Lax")
-                .build();
+        ResponseCookie AccessToken = authService.getAccessTokenCookie(
+                                    dto.getTokenResponseDto().getACCESS_TOKEN());
 
-        ResponseCookie RefreshToken = ResponseCookie.from(
-                "REFRESH_TOKEN", dto.getTokenResponseDto().getREFRESH_TOKEN())
-                .path("/")
-                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
-                .httpOnly(true)
-                .sameSite("Lax")
-                .build();
+        ResponseCookie RefreshToken = authService.getRefreshTokenCookie(
+                                    dto.getTokenResponseDto().getREFRESH_TOKEN());
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", AccessToken.toString())
@@ -93,19 +83,29 @@ public class AuthController {
                 .header("Set-Cookie", "ACCESS_TOKEN=")
                 .header("Set-Cookie", "REFRESH_TOKEN=")
                 .body(ResponseDto.of(
-                HttpStatus.OK,
-                "로그아웃 성공")
-        );
+                        HttpStatus.OK,
+                        "로그아웃 성공")
+                );
     }
 
-    //TODO : 토큰을 그냥 바디에 담아준다?
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck
     @GetMapping("/updateToken")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue("ACCESS_TOKEN") String accessToken,
-                                                    @CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN")
+                                                            String refreshToken) throws Exception {
 
-        return ResponseEntity.ok().body(
-                authService.updateAccessToken(accessToken, refreshToken));
+
+        System.out.println("accessToken = " + refreshToken);
+        TokenResponseDto tokenDto = authService.updateAccessToken(refreshToken);
+        ResponseCookie AccessToken = authService.getAccessTokenCookie(
+                                                    tokenDto.getACCESS_TOKEN());
+
+        ResponseCookie RefreshToken = authService.getRefreshTokenCookie(
+                                                    tokenDto.getREFRESH_TOKEN());
+        System.out.println("토큰 다시 발급 후");
+        return ResponseEntity.ok()
+                .header("Set-Cookie", AccessToken.toString())
+                .header("Set-Cookie", RefreshToken.toString())
+                .body(ResponseDto.of("토큰이 재발급 되었습니다", null));
     }
 
     @PostMapping("/certifications") // 쓸일 없음

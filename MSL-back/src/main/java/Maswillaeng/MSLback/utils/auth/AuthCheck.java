@@ -8,9 +8,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface AuthCheck {
-    Role role();
+    Role role() default Role.ALL;
 
     enum Role {
+        ALL(0),
         USER(1),
         ADMIN(2);
 

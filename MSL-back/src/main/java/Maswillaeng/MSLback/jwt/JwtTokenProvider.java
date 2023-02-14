@@ -1,7 +1,6 @@
 package Maswillaeng.MSLback.jwt;
 
 import Maswillaeng.MSLback.domain.entity.RoleType;
-import Maswillaeng.MSLback.domain.entity.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +8,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -21,7 +20,7 @@ public class JwtTokenProvider implements InitializingBean {
     @Value("${secret.access}")
     private String SECRET_KEY;
 
-    public static final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
+        public static final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
 //    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
     public static final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
 
@@ -32,7 +31,8 @@ public class JwtTokenProvider implements InitializingBean {
 
 
     public String createAccessToken(Long userId, RoleType roleType) {
-        Claims claims = Jwts.claims();//.setSubject(userPk); // JWT payload 에 저장되는 정보단위
+
+        Claims claims = Jwts.claims().setSubject("ATK");
         claims.put("userId", userId);
         claims.put("role", roleType);
 
@@ -46,8 +46,9 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
 
-    public String createRefreshToken() {
-        Claims claims = Jwts.claims();
+    public String createRefreshToken(Long userId) {
+        Claims claims = Jwts.claims().setSubject("RTK");
+        claims.put("userId", userId);
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
@@ -60,21 +61,22 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
 
-    public Claims getClaims(String token){
-        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-        return claims;
+    public Claims getClaims(String token) throws JwtException {
+        try {
+            return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (JwtException e) {
+            throw new JwtException("잘못된 토큰입니다.", e);
+        }
     }
 
-    public Long getUserId(String token){
-        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-        return Long.parseLong(String.valueOf(claims.get("userId")));
+    public Optional<Long> getUserIdWithoutException(String token) {
+        try {
+            Long userId = this.getClaims(token).get("userId", Long.class);
+            return Optional.of(userId);
+        } catch (ExpiredJwtException exception) {
+            return Optional.empty();
+        }
     }
-
-
-
-    public boolean isValidToken(String token) {
-        Claims accessClaims =getClaims(token);
-        return true;
-    }
-
 }
