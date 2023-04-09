@@ -1,7 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.Util.AuthenticationPrincipal;
-import Maswillaeng.MSLback.dto.user.reponse.UserResponseDto;
+import Maswillaeng.MSLback.dto.user.response.UserResponseDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.service.UserService;
 import lombok.RequiredArgsConstructor;

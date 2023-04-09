@@ -1,7 +1,6 @@
-package Maswillaeng.MSLback.dto.user.reponse;
+package Maswillaeng.MSLback.dto.user.response;
 
 import Maswillaeng.MSLback.domain.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

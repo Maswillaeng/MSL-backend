@@ -20,27 +20,44 @@ public class LikeService {
     private final PostRepository postRepository;
     private final LikeRepository postLikeRepository;
 
-    public void isLiked(Long userId, Long postId){
+    public void saveLike(Long userId, Long postId) {
         User user = userRepository.findById(userId).get();
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
 
-        if (postLikeRepository.existsLikeByUserAndPost(user, post)) {
-            deletePostLike(user, post);
-        }
-        else {
-            savePostLike(user, post);
-        }
-    }
-
-    public void savePostLike(User user, Post post) {
         Like like = Like.builder()
                 .user(user)
                 .post(post).build();
         postLikeRepository.save(like);
     }
 
-    public void deletePostLike(User user, Post post) {
+    public void deleteLike(Long userId, Long postId) {
+        User user = userRepository.findById(userId).get();
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
         postLikeRepository.deleteLikeByUserAndPost(user, post);
     }
+//        public void isLiked(Long userId, Long postId){
+//        User user = userRepository.findById(userId).get();
+//        Post post = postRepository.findById(postId).orElseThrow(
+//                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
+//
+//        if (postLikeRepository.existsLikeByUserAndPost(user, post)) {
+//            deletePostLike(user, post);
+//        }
+//        else {
+//            savePostLike(user, post);
+//        }
+//    }
+//
+//    public void saveLike(User user, Post post) {
+//        Like like = Like.builder()
+//                .user(user)
+//                .post(post).build();
+//        postLikeRepository.save(like);
+//    }
+//
+//    public void deleteLike(User user, Post post) {
+//        postLikeRepository.deleteLikeByUserAndPost(user, post);
+//    }
 }

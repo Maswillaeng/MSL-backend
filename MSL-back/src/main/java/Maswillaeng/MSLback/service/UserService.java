@@ -2,8 +2,7 @@ package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
-import Maswillaeng.MSLback.dto.auth.request.UserPasswordCheckRequestDto;
-import Maswillaeng.MSLback.dto.user.reponse.UserResponseDto;
+import Maswillaeng.MSLback.dto.user.response.UserResponseDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
