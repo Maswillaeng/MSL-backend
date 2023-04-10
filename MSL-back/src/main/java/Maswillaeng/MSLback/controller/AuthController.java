@@ -64,7 +64,7 @@ public class AuthController {
 
     @PostMapping("/duplicate/nickname")
     public ResponseEntity nicknameDuplicate(@RequestBody Map<String, String> request) {
-        String nickname = request.get("nickName");
+        String nickname = request.get("nickname");
 
         if (authService.nicknameDuplicate(nickname)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
