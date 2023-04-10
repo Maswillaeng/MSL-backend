@@ -3,7 +3,6 @@ package Maswillaeng.MSLback.service;
 import Maswillaeng.MSLback.domain.entity.Follow;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.FollowRepository;
-import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.response.UserFollowResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,9 @@ public class FollowService {
 
 
     public void saveFollow(Long userId, Long toUserId) {
+        System.out.println("userId = " + userId);
+        System.out.println("toUserId = " + toUserId);
+
         if(isFollow(userId, toUserId))
             throw new IllegalStateException("You are already subscribed.");
 

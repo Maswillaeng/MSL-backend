@@ -14,12 +14,10 @@ import java.util.List;
 @RequestMapping("/api/follow")
 public class FollowController {
 
-    FollowService followService;
+    private final FollowService followService;
 
     @PostMapping("/{toUserId}")
     public ResponseEntity saveFollow(@AuthenticationPrincipal Long userId, @PathVariable Long toUserId){
-        System.out.println("userId = " + userId);
-        System.out.println("toUserId = " + toUserId);
 
         followService.saveFollow(userId, toUserId);
         return ResponseEntity.ok().build();
