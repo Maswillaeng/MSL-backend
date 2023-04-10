@@ -80,10 +80,10 @@ public class PostService {
     }
 
     public void updatePost(Long postId, PostsUpdateRequestDto requestDto) {
-
         Post post = postsRepository.findById(postId)
                 .orElseThrow(
-                        ()-> new IllegalStateException("게시물이 존재하지 않습니다. id=" + postId)); //get null처리 안하고 강제
+                        ()-> new IllegalStateException("게시물이 존재하지 않습니다. id=" + postId));
+
         post.update(requestDto);
     }
 

@@ -1,7 +1,11 @@
 package Maswillaeng.MSLback.dto.user.response;
 
 import Maswillaeng.MSLback.domain.entity.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@Getter
 public class UserFollowResponseDto {
     private Long userId;
 

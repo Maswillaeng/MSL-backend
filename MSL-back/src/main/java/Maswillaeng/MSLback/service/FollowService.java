@@ -51,21 +51,21 @@ public class FollowService {
     }
 
     public List<UserFollowResponseDto> findFollowingListByUserId(Long userId) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-        List<UserFollowResponseDto> followingList = followRepository.findAllByToUser(userId);
+        List<UserFollowResponseDto> followingList = followRepository.findAllByFromUser(userId);
         return followingList;
     }
 
     public List<UserFollowResponseDto> findFollowingListByNickname(String nickname) {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-        List<UserFollowResponseDto> followingList = followRepository.findAllByFromUser(user.getId());
+        List<UserFollowResponseDto> followingList = followRepository.findAllByToUser(user.getId());
         return followingList;
     }
 
     public List<UserFollowResponseDto> findFollowerListByUserId(Long userId) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
         List<UserFollowResponseDto> followerList = followRepository.findAllByFromUser(userId);
         return followerList;
