@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.domain.repository;
 
+import Maswillaeng.MSLback.domain.entity.Category;
 import Maswillaeng.MSLback.domain.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,5 +14,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByUserId(Long userId, Pageable pageable);
 
     Page<Post> findAllByUser_Nickname(String nickname, Pageable pageable);
+
+    Page<Post> findAllByCategory(Category category, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
 }

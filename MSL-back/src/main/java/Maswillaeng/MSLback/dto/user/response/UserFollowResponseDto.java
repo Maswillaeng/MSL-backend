@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 public class UserFollowResponseDto {
     private Long userId;
 
-    private String nickName;
+    private String nickname;
     private String userImage;
 
     public UserFollowResponseDto(User user) {
         this.userId = user.getId();
-        this.nickName = user.getNickname();
+        this.nickname = user.getNickname();
         this.userImage = user.getUserImage();
     }
 }
