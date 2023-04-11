@@ -1,6 +1,6 @@
 package Maswillaeng.MSLback.dto.user.response;
 
-import Maswillaeng.MSLback.domain.entity.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,13 +8,25 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserFollowResponseDto {
     private Long userId;
+    private Long otherUserId;
 
-    private String nickname;
-    private String userImage;
+    private boolean isFollow;
 
-    public UserFollowResponseDto(User user) {
-        this.userId = user.getId();
-        this.nickname = user.getNickname();
-        this.userImage = user.getUserImage();
+    private int myFollowerCnt;
+    private int myFollowingCnt;
+
+    private int otherFollowerCnt;
+    private int otherFollowingCnt;
+
+    @Builder
+    public UserFollowResponseDto(Long userId, Long otherUserId, boolean isFollow, int myFollowerCnt, int myFollowingCnt, int otherFollowerCnt, int otherFollowingCnt) {
+        this.userId = userId;
+        this.otherUserId = otherUserId;
+        this.isFollow = isFollow;
+        this.myFollowerCnt = myFollowerCnt;
+        this.myFollowingCnt = myFollowingCnt;
+        this.otherFollowerCnt = otherFollowerCnt;
+        this.otherFollowingCnt = otherFollowingCnt;
     }
+
 }

@@ -46,7 +46,6 @@ public class AuthController {
     @PostMapping("/issue")
     public ResponseEntity reissueToken(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
-        System.out.println(refreshToken);
         TokenResponseDto responseDto = authService.reissueToken(refreshToken);
 
         return ResponseEntity.ok().body(responseDto); //RTR 선택
