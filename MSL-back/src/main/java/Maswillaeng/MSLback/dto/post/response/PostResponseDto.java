@@ -11,18 +11,23 @@ import java.util.stream.Collectors;
 
 @Getter
 public class PostResponseDto {
-    private Long Id;
+    private Long postId;
+
+    private Long userId;
     private String nickname;
     private String userImage;
+
     private String thumbnail;
     private String title;
     private String content;
     private Category category;
     private LocalDateTime createdDate;
     private List<CommentResponseDto> commentList;
+    private int countlike;
 
     public PostResponseDto(Post post) {
-        this.Id = post.getId();
+        this.postId = post.getId();
+        this.userId = post.getUser().getId();
         this.nickname = post.getUser().getNickname();
         this.userImage = post.getUser().getUserImage();
         this.thumbnail = post.getThumbnail();
@@ -34,6 +39,7 @@ public class PostResponseDto {
                 .filter(comment -> comment.getParent() == null)
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
+        this.countlike = post.getLikeList().size();
     }
 }
 
