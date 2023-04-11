@@ -13,6 +13,8 @@ public class UserResponseDto {
     private String userImage;
     private String introduction;
 
+    private int followerCnt;
+    private int followingCnt;
 
     @Builder
     public UserResponseDto(User user){
@@ -20,5 +22,7 @@ public class UserResponseDto {
         this.nickname = user.getNickname();
         this.userImage = user.getUserImage();
         this.introduction = user.getIntroduction();
+        this.followingCnt = user.getFollowingList().size();
+        this.followerCnt = user.getFollowerList().size();
     }
 }

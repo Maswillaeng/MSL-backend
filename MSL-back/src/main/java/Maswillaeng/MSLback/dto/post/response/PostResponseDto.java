@@ -23,7 +23,7 @@ public class PostResponseDto {
     private Category category;
     private LocalDateTime createdDate;
     private List<CommentResponseDto> commentList;
-    private int countlike;
+    private int likeCnt;
 
     public PostResponseDto(Post post) {
         this.postId = post.getId();
@@ -39,7 +39,7 @@ public class PostResponseDto {
                 .filter(comment -> comment.getParent() == null)
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
-        this.countlike = post.getLikeList().size();
+        this.likeCnt = post.getLikeList().size();
     }
 }
 
