@@ -21,19 +21,17 @@ public class FollowService {
 
 
     public UserFollowResponseDto saveFollow(Long userId, String nickname) {
+        User fromUser = userRepository.findById(userId).get();
         User toUser = userRepository.findByNickname(nickname).orElseThrow(() -> new IllegalStateException("This user does not exist"));
-        Long toUserId = toUser.getId();
-        if(isFollow(userId, toUserId))
+        if(isFollow(fromUser, toUser))
             throw new IllegalStateException("You are already subscribed.");
-
-        User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("This user does not exist"));
 
         Follow follow = Follow.builder().toUser(toUser).fromUser(fromUser).build();
         followRepository.save(follow);
 
         UserFollowResponseDto responseDto = UserFollowResponseDto.builder()
                 .userId(userId)
-                .otherUserId(toUserId)
+                .otherUserId(toUser.getId())
                 .isFollow(true)
                 .myFollowerCnt(countFollower(userId))
                 .myFollowingCnt(countFollowing(userId))
@@ -44,20 +42,19 @@ public class FollowService {
     }
 
     public UserFollowResponseDto deleteFollow(Long userId, String nickname) {
+        User fromUser = userRepository.findById(userId).get();
         User toUser = userRepository.findByNickname(nickname).orElseThrow(() -> new IllegalStateException("This user does not exist"));
-        Long toUserId = toUser.getId();
 
-        if (!isFollow(userId, toUserId)) {
+        if (!isFollow(fromUser, toUser)) {
             new IllegalStateException("구독중이 아닙니다.");
         }
 
-        userRepository.findById(toUserId).orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-        Follow follow = followRepository.findByFromUserIdAndToUserId(userId, toUserId);
+        Follow follow = followRepository.findByFromUserAndToUser(fromUser, toUser);
         followRepository.delete(follow);
 
         UserFollowResponseDto responseDto = UserFollowResponseDto.builder()
                 .userId(userId)
-                .otherUserId(toUserId)
+                .otherUserId(toUser.getId())
                 .isFollow(false)
                 .myFollowerCnt(countFollower(userId))
                 .myFollowingCnt(countFollowing(userId))
@@ -67,30 +64,15 @@ public class FollowService {
         return responseDto;
     }
 
-
-    public boolean isFollow(Long fromUserId, Long toUserId) {
-        return followRepository.existsByFromUserIdAndToUserId(fromUserId, toUserId);
-    }
-
-    public List<UserFollowListResponseDto> findFollowingListByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-        List<UserFollowListResponseDto> followingList = followRepository.findAllByFromUser(user);
-        return followingList;
+    public boolean isFollow(User fromUser, User toUser) {
+        return followRepository.existsByFromUserAndToUser(fromUser, toUser);
     }
 
     public List<UserFollowListResponseDto> findFollowingListByNickname(String nickname) {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-        List<UserFollowListResponseDto> followingList = followRepository.findAllByToUser(user);
+        List<UserFollowListResponseDto> followingList = followRepository.findAllByFromUser(user);
         return followingList;
-    }
-
-    public List<UserFollowListResponseDto> findFollowerListByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-        List<UserFollowListResponseDto> followerList = followRepository.findAllByFromUser(user);
-        return followerList;
     }
 
     public List<UserFollowListResponseDto> findFollowerListByNickname(String nickname) {
@@ -118,5 +100,19 @@ public class FollowService {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
         return followRepository.countByToUserId(user.getId());
+    }
+
+    public List<UserFollowListResponseDto> findFollowingListByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
+        List<UserFollowListResponseDto> followingList = followRepository.findAllByFromUser(user);
+        return followingList;
+    }
+
+    public List<UserFollowListResponseDto> findFollowerListByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
+        List<UserFollowListResponseDto> followerList = followRepository.findAllByFromUser(user);
+        return followerList;
     }
 }

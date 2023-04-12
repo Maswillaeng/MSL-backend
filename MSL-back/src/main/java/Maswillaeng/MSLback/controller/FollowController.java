@@ -63,11 +63,11 @@ public class FollowController {
         return ResponseEntity.ok().body(followerList);
     }
 
-    @GetMapping("/isFollow/{toUserId}")
+/*    @GetMapping("/isFollow/{toUserId}")
     public ResponseEntity<Boolean> isFollow(@AuthenticationPrincipal Long userId, @PathVariable Long toUserId){
         Boolean isFollow = followService.isFollow(userId, toUserId);
         return ResponseEntity.ok().body(isFollow);
-    }
+    }*/
 
     @GetMapping("/following/count/{userId}")
     public ResponseEntity<Integer> countFollowing(@PathVariable Long userId){

@@ -25,6 +25,9 @@ public class LikeService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
 
+        if(isLiked(user, post))
+            throw new IllegalStateException("You are already subscribed.");
+
         Like like = Like.builder()
                 .user(user)
                 .post(post).build();
@@ -37,18 +40,9 @@ public class LikeService {
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
         postLikeRepository.deleteLikeByUserAndPost(user, post);
     }
-//        public void isLiked(Long userId, Long postId){
-//        User user = userRepository.findById(userId).get();
-//        Post post = postRepository.findById(postId).orElseThrow(
-//                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
-//
-//        if (postLikeRepository.existsLikeByUserAndPost(user, post)) {
-//            deletePostLike(user, post);
-//        }
-//        else {
-//            savePostLike(user, post);
-//        }
-//    }
+    public boolean isLiked(User user, Post post){
+        return postLikeRepository.existsByUserAndPost(user, post);
+    }
 //
 //    public void saveLike(User user, Post post) {
 //        Like like = Like.builder()

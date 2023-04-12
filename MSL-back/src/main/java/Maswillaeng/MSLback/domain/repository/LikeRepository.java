@@ -6,6 +6,6 @@ import Maswillaeng.MSLback.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
-    boolean existsLikeByUserAndPost(User user, Post post);
+    boolean existsByUserAndPost(User user, Post post);
     void deleteLikeByUserAndPost(User user, Post post);
 }

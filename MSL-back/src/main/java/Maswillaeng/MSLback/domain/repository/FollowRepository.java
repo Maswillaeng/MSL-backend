@@ -38,6 +38,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     int countByToUserId(Long fromUserId); // 팔로워 수 (follower)
     int countByFromUserId(Long toUserId);// 팔로우 수 (following)
 
-    boolean existsByFromUserIdAndToUserId(Long fromUserId, Long toUserId);
-    Follow findByFromUserIdAndToUserId(Long fromUserId, Long toUserId);
+    boolean existsByFromUserAndToUser(User fromUser, User toUser);
+    Follow findByFromUserAndToUser(User fromUser, User toUser);
 }
